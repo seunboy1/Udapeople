@@ -26,6 +26,17 @@ jobs:
       - run:
           name: "Say world"
           command: "echo World!"
+  
+  print_var:
+    docker:
+      - image: cimg/base:2021.11
+    steps:
+      - checkout
+      - run:
+          name: "echo an env var that is part of our project"
+          command: |
+            echo $MY_NAME
+          
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -35,3 +46,4 @@ workflows:
       - print_hello
       - print_world:
           requires: [print_hello]
+      - print_var
