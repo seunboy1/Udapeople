@@ -34,7 +34,7 @@ jobs:
       - checkout
       - run:
           name: "echo an env var that is part of our project"
-          command: echo $MY_NAME # this env var must be set within the project
+          command: "echo World!"
           
 
 # Invoke jobs via workflows
