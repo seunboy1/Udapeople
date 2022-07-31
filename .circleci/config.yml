@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: "Say hello"
-          command: "echo Hello,,"
+          command: "echo Hello,"
     
   print_world:
     docker:
@@ -35,7 +35,7 @@ jobs:
       - run:
           name: "echo an env var that is part of our project"
           command: |
-            echo $MY_ENV_VAR
+            echo $MY_NAME
           
 
 # Invoke jobs via workflows
