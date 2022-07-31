@@ -62,4 +62,6 @@ workflows:
       - print_hello
       - save_world_output:
           requires: [print_hello]
+      - print_output_file:
+          requires: [save_world_output]
       - print_var
