@@ -72,6 +72,16 @@ jobs:
           name: "echo an env var that is part of our project"
           command: |
             echo $MY_NAME
+  
+  test_fail:
+    docker:
+      - image: cimg/base:2021.11
+    steps:
+      - run: exit 1
+      - run:
+          name: on error
+          command: echo "Hello Error!"
+          when: on_fail
           
 
 # Invoke jobs via workflows
@@ -86,3 +96,4 @@ workflows:
           requires: [save_world_output]
       - print_var
       - print_id_from_command
+      - test_fail
