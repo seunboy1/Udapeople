@@ -9,7 +9,7 @@ commands:
     parameters:
       id:
         type: string
-        default: $CIRCLE_WORKFLOW_ID
+        default: "123" 
     steps:
       - run: echo << parameters.id >>
 
@@ -59,7 +59,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - print_pipeline_id
+      - print_pipeline_id:
+          id: << pipeline.id >>
 
   
   print_var:
