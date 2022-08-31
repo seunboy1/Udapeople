@@ -1,6 +1,9 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
+
+# orbs:
+  # Choose either one of the orbs below
+  # welcome: circleci/welcome-orb@0.4.1
+  # aws-cli: circleci/aws-cli@2.0.3
 
 # resuable job code like functions in python
 commands:
@@ -13,23 +16,16 @@ commands:
     steps:
       - run: echo << parameters.id >>
 
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   print_hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       - image: circleci/node:13.8.0
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
       - run:
           name: "Say hello"
           command: "echo Hello,"
-    
+
   save_world_output:
     docker:
       - image: circleci/node:13.8.0
@@ -42,7 +38,7 @@ jobs:
           root: ~/
           paths:
             - output.txt
-  
+
   print_output_file:
     docker:
       - image: circleci/node:13.8.0
@@ -53,7 +49,7 @@ jobs:
       - run:
           name: "Print world output"
           command: cat ~/output.txt
-  
+
   print_id_from_command:
     docker:
       - image: circleci/node:13.8.0
@@ -62,7 +58,6 @@ jobs:
       - print_pipeline_id:
           id: << pipeline.id >>
 
-  
   print_var:
     docker:
       - image: cimg/base:2021.11
@@ -82,18 +77,30 @@ jobs:
           name: on error
           command: echo "Hello Error!"
           when: on_fail
-          
+  
+  create_infrastructure: 
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-east-1
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  main:
+  my_workflow:
     jobs:
       - print_hello
       - save_world_output:
-          requires: [print_hello]
+        requires: [print_hello]
       - print_output_file:
-          requires: [save_world_output]
+        requires: [save_world_output]
       - print_var
       - print_id_from_command
-      - test_fail
+      - create_infrastructure
+      - test_fail:
+        requires: [create_infrastructure]
