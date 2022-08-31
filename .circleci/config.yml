@@ -96,11 +96,11 @@ workflows:
     jobs:
       - print_hello
       - save_world_output:
-        requires: [print_hello]
+          requires: [print_hello]
       - print_output_file:
-        requires: [save_world_output]
+          requires: [save_world_output]
       - print_var
       - print_id_from_command
       - create_infrastructure
       - test_fail:
-        requires: [create_infrastructure]
+          requires: [create_infrastructure]
