@@ -25,10 +25,12 @@ commands:
           # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
           when: on_fail
           command: |
+            apt update
+            apt install curl
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
-            aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name myStack-b9beb3f
 
 jobs:
   print_hello:
@@ -132,9 +134,9 @@ workflows:
       - print_var
       - print_id_from_command:
           requires: [print_var]
-      - create_infrastructure
-      # - configure_infrastructure
-      - configure_infrastructure:
-          requires: [create_infrastructure]
+      # - create_infrastructure
+      - configure_infrastructure
+      # - configure_infrastructure:
+      #     requires: [create_infrastructure]
       - smoke_test:
           requires: [configure_infrastructure]
