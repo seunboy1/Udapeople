@@ -17,6 +17,7 @@ commands:
       - run: echo << parameters.id >>
       
   destroy_environment:
+    description: "Destroys a stack"
     steps:
       - run:
           name: Destroy environment
@@ -87,7 +88,7 @@ jobs:
           name: Create Cloudformation Stack
           command: |
             aws cloudformation deploy --template-file infra.yml --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7} --region us-east-1
-
+      
   configure_infrastructure: 
     docker:
       - image: python:3.7-alpine3.11
@@ -114,8 +115,7 @@ jobs:
           name: Test job
           # Fail the job intentionally to simulate an error.
           command:  return 1
-      - destroy_environment:
-          when: on_fail
+      - destroy_environment
         
 
 workflows:
@@ -128,9 +128,9 @@ workflows:
           requires: [save_world_output]
       - print_var
       - print_id_from_command
-      # - create_infrastructure
-      - configure_infrastructure
-      # - configure_infrastructure:
-      #     requires: [create_infrastructure]
+      - create_infrastructure
+      # - configure_infrastructure
+      - configure_infrastructure:
+          requires: [create_infrastructure]
       - smoke_test:
           requires: [configure_infrastructure]
