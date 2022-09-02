@@ -67,17 +67,7 @@ jobs:
           name: "echo an env var that is part of our project"
           command: |
             echo $MY_NAME
-  
-  test_fail:
-    docker:
-      - image: cimg/base:2021.11
-    steps:
-      - run: exit 1
-      - run:
-          name: on error
-          command: echo "Hello Error!"
-          when: on_fail
-  
+            
   create_infrastructure: 
     docker:
       - image: amazon/aws-cli
@@ -107,21 +97,21 @@ jobs:
 
   # Exercise: Smoke Testing
   smoke_test:
-  docker:
-    - image: alpine:latest
-  steps:
-    - run: apk add --update curl
-    - run:
-        name: smoke test
-        command: |
-          URL="https://blog.udacity.com/"
-          # Test if website exists
-          if curl -s --head ${URL} 
-          then
-            return 0
-          else
-            return 1
-          fi
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: apk add --update curl
+      - run:
+          name: smoke test
+          command: |
+            URL="https://blog.udacity.com/"
+            # Test if website exists
+            if curl -s --head ${URL} 
+            then
+              return 0
+            else
+              return 1
+            fi
 
 workflows:
   my_workflow:
