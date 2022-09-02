@@ -67,17 +67,7 @@ jobs:
           name: "echo an env var that is part of our project"
           command: |
             echo $MY_NAME
-  
-  test_fail:
-    docker:
-      - image: cimg/base:2021.11
-    steps:
-      - run: exit 1
-      - run:
-          name: on error
-          command: echo "Hello Error!"
-          when: on_fail
-  
+            
   create_infrastructure: 
     docker:
       - image: amazon/aws-cli
@@ -86,7 +76,42 @@ jobs:
       - run:
           name: Create Cloudformation Stack
           command: |
-            aws cloudformation deploy --template-file template.yml --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} --region us-east-1
+            aws cloudformation deploy --template-file infra.yml --stack-name circleciStack --region us-east-1
+
+  configure_infrastructure: 
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+              # You can get this ID in the section where you registered the SSH Key
+              fingerprints: ["ba:9e:f8:f2:df:88:41:c0:73:31:9c:33:f4:0f:18:e0"] 
+      - run:
+          name: Install Ansible
+          command: |
+            apk add --update ansible
+      - run:
+          name: Run Playbook and Configure server
+          command: |
+            ansible-playbook -i inventory playbook.yml
+
+  # Exercise: Smoke Testing
+  smoke_test:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: apk add --update curl
+      - run:
+          name: smoke test
+          command: |
+            URL="https://blog.udacity.com/"
+            # Test if website exists
+            if curl -s --head ${URL} 
+            then
+              return 0
+            else
+              return 1
+            fi
 
 workflows:
   my_workflow:
@@ -98,6 +123,9 @@ workflows:
           requires: [save_world_output]
       - print_var
       - print_id_from_command
-      - create_infrastructure
-      - test_fail:
-          requires: [create_infrastructure]
+      # - create_infrastructure
+      - configure_infrastructure
+      # - configure_infrastructure:
+          # requires: [create_infrastructure]
+      - smoke_test:
+          requires: [configure_infrastructure]
