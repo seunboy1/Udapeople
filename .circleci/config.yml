@@ -114,7 +114,8 @@ jobs:
           name: Test job
           # Fail the job intentionally to simulate an error.
           command:  return 1
-      - destroy_environment  
+      - destroy_environment
+        
 
 workflows:
   my_workflow:
@@ -126,9 +127,9 @@ workflows:
           requires: [save_world_output]
       - print_var
       - print_id_from_command
-      - create_infrastructure
-      # - configure_infrastructure
-      - configure_infrastructure:
-          requires: [create_infrastructure]
+      # - create_infrastructure
+      - configure_infrastructure
+      # - configure_infrastructure:
+      #     requires: [create_infrastructure]
       - smoke_test:
           requires: [configure_infrastructure]
