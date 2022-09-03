@@ -1,6 +1,7 @@
 # Udapeople
 
 Blue green deployment
+Write a set of jobs that promotes a new environment to production and decommissions the old environment in an automated process.
  Prerequisites
 Key pair - You should have an AWS EC2 key pair already created in your AWS Console, and downloaded to your local mahcine. We are assuming the key pair name is udacity.pem.
 This repository set up in circleci
@@ -10,7 +11,7 @@ Create an EC2 instance and note it's public IP address
 Add the contents of your PEM file to the SSH keys in your Circle CI account to get the fingerprints
 Save the SSH key pair
 Verify the public IP address of the EC2 instance in your AWS console and the inventory file. If not, manually add the public IP address of your EC2 instance to the inventory file underneath [all]
-
+Create a public S3 Bucket (e.g., mybucket644752792305) manually.
 
 
 aws cloudformation create-stack --stack-name myFirstTest --region us-east-1 --template-body file://infra.yml
