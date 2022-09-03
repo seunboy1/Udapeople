@@ -1,9 +1,9 @@
 version: 2.1
 
-# orbs:
+orbs: 
   # Choose either one of the orbs below
   # welcome: circleci/welcome-orb@0.4.1
-  # aws-cli: circleci/aws-cli@2.0.3
+  aws-cli: circleci/aws-cli@2.0.3
 
 # resuable job code like functions in python
 commands:
@@ -25,11 +25,6 @@ commands:
           # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
           when: on_fail
           command: |
-            apt update
-            apt install curl
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
             aws cloudformation delete-stack --stack-name myStack-b9beb3f
 
 jobs:
