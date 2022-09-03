@@ -15,15 +15,15 @@ commands:
         default: "123" 
     steps:
       - run: echo << parameters.id >>
-      
+  # Exercise - Rollback
   destroy_environment:
-    description: "Destroys a stack"
     steps:
       - run:
           name: Destroy environment
           # ${CIRCLE_WORKFLOW_ID} is a Built-in environment variable 
           # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
-          command: |
+          when: on_fail
+          command: |  
             aws cloudformation delete-stack --stack-name myStack-b9beb3f
 
 jobs:
@@ -110,12 +110,19 @@ jobs:
     docker:
       - image: alpine:latest
     steps:
+      - run: apk add --update curl
       - run:
-          name: Test job
-          # Fail the job intentionally to simulate an error.
-          command:  return 1
-      - destroy_environment
-        
+          name: smoke test
+          command: |
+            URL="https://blog.udacity.com/"
+            # Test if website exists
+            if curl -s --head ${URL} 
+            then
+              return 0
+            else
+              return 1
+            fi
+      - destroy_environment         
 
 workflows:
   my_workflow:
