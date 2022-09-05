@@ -110,21 +110,35 @@ jobs:
 #       # Restore from cache
 #       # Your job code here
             
-#   scan-frontend:
-#     docker:
-#       # Docker image here
-#     steps:
-#       # Checkout code from git
-#       # Restore from cache
-#       # Your job code here
+  scan-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          key: frontend-build-cache
+      - run:
+          name: Scan frontend
+          command: |
+            cd ./frontend
+            npm audit fix --audit-level=critical --force
 
-#   scan-backend:
-#     docker:
-#       # Docker image here
-#     steps:
-#       # Checkout code from git
-#       # Restore from cache
-#       # Your job code here
+  scan-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          key: backend-build-cache
+      - run:
+          name: Scan backend
+          command: |
+            cd ./backend
+            npm audit fix --audit-level=critical --force
+      - save_cache:
+          paths: [backend/node-modules]
+          key: backend-build-cache
+
 
 #   deploy-infrastructure:
 #     docker:
@@ -301,10 +315,10 @@ workflows:
           requires: [build-frontend]
       - test-backend:
           requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
       # - deploy-infrastructure:
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     filters:
