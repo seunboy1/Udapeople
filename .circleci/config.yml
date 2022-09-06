@@ -202,10 +202,6 @@ jobs:
           command: |
             cd ./.circleci/ansible
             ansible-playbook configure-server.yml -i inventory.txt
-      - persist_to_workspace:
-          root:  .
-          paths:
-            - backend/.env
 #       # Here's where you will add some code to rollback on failure      
 
   run-migrations:
