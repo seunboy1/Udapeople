@@ -230,6 +230,9 @@ jobs:
           root: .
           paths:
             - backend/migrations_dump.txt
+      - save_cache:
+          paths: [backend/node-modules]
+          key: backend-build-cache
      # Here's where you will add some code to rollback on failure      
 
   # deploy-frontend:
