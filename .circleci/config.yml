@@ -151,12 +151,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Ensure back-end infrastructure exists
+          name: Deploy backend infrastructure
           command: |
             aws cloudformation deploy --template-file .circleci/files/backend.yml --tags project=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" 
               
       - run:
-          name: Ensure front-end infrastructure exist
+          name: Deploy frontend infrastructure
           command: |
             aws cloudformation deploy --template-file .circleci/files/frontend.yml --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       
@@ -171,23 +171,28 @@ jobs:
       #       - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
 
-#   configure-infrastructure:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Configure server
-#           command: |
-#             # Your code here
-#             exit 1
+  configure-infrastructure:
+    docker:
+      - image: python:3.8-alpine3.15
+    steps:
+      - checkout
+      - add_ssh_keys:
+        fingerprints: ["ba:9e:f8:f2:df:88:41:c0:73:31:9c:33:f4:0f:18:e0"]
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install dependencies
+          working_directory: ./.circleci/ansible
+          command: |
+            apk add --update tar gzip
+            apk add --update openssh
+            apk add --update curl
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            cd ./.circleci/ansible
+            ansible-playbook configure-server.yml -i inventory.txt
 #       # Here's where you will add some code to rollback on failure      
 
 #   run-migrations:
