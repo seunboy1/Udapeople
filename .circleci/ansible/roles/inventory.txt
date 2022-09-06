@@ -1,2 +1,0 @@
-[all]
-ec2-54-163-206-160.compute-1.amazonaws.com
