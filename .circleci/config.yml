@@ -202,6 +202,10 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          key: backend-build-cache
+      - attach_workspace:
+          at: .
       - run:
           name: Run migrations
           command: |
@@ -228,44 +232,45 @@ jobs:
             - backend/migrations_dump.txt
      # Here's where you will add some code to rollback on failure      
 
-  deploy-frontend:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install dependencies
-          command: |
-            yum install -y python3
-            curl --silent --location https://rpm.nodesource.com/setup_16.x | bash -
-            yum install -y nodejs
-            python3 -m pip -V
-            if [ $? -eq 0 ]
-            then
-              python3 -m pip install --user ansible
-            fi
+  # deploy-frontend:
+  #   docker:
+  #     - image: amazon/aws-cli
+  #   steps:
+  #     - checkout
+  #     - attach_workspace:
+  #         at: .
+  #     - run:
+  #         name: Install dependencies
+  #         command: |
+  #           yum install -y python3
+  #           curl --silent --location https://rpm.nodesource.com/setup_16.x | bash -
+  #           yum install -y nodejs
+  #           python3 -m pip -V
+  #           if [ $? -eq 0 ]
+  #           then
+  #             python3 -m pip install --user ansible
+  #           fi
 
-      - run:
-          name: Get backend url and setup environment variables
-          command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "new API_URL to be baked into FE = ${API_URL}"
-            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-            cat frontend/.env
-      - run:
-          name: Deploy frontend objects
-          command: |
-            cd frontend
-            npm install
-            npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-      - revert_migrations:
-          workflowID: ${CIRCLE_WORKFLOW_ID:0:7} 
+  #     - run:
+  #         name: Get backend url and setup environment variables
+  #         command: |
+  #           export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
+  #           export API_URL="http://${BACKEND_IP}:3030"
+  #           echo "new API_URL to be baked into FE = ${API_URL}"
+  #           echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+  #           cat frontend/.env
+  #     - run:
+  #         name: Deploy frontend objects
+  #         command: |
+  #           cd frontend
+  #           npm install
+  #           npm run build
+  #           tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+  #           aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+  #     - destroy_environment:
+  #         workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+  #     - revert_migrations:
+  #         workflowID: ${CIRCLE_WORKFLOW_ID:0:7} 
                     
 #   deploy-backend:
 #     docker:
@@ -365,8 +370,8 @@ workflows:
       - run-migrations
       # - run-migrations:
       #     requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - smoke-test:
