@@ -215,17 +215,19 @@ jobs:
       #     at: .
       
       - run:
-          name: Run migrations
+          name: Test backend
           command: |
-            cd backend
-            ls
-            ls node_modules
+            cd ./backend
+            npm install
+            npm run test
             
       - run:
           name: Run migrations
           command: |
             cd backend
             npm install
+            ls
+            ls node_modules
             npm audit fix --force
             npm run migrations > migrations_dump.txt
       - run:
