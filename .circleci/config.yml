@@ -214,15 +214,9 @@ jobs:
       # - attach_workspace:
       #     at: .
       - run:
-          name: list directory
-          command: |
-            pwd
-            ls
-            cd ..
-      - run:
           name: Run migrations
           command: |
-            cd ../backend
+            cd backend
             npm install
             npm run migrations > migrations_dump.txt
       - run:
