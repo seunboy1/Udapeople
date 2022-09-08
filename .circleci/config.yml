@@ -218,9 +218,6 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-      - run:
-          name: Run migrations
-          command: |
             npm install
       - run:
           name: Run migrations
