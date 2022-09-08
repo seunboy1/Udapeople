@@ -213,6 +213,23 @@ jobs:
       #     key: backend-build-cache
       # - attach_workspace:
       #     at: .
+      
+      - run:
+          name: Run migrations
+          command: |
+            cd backend
+      - run:
+          name: Run migrations
+          command: |
+            npm install
+      - run:
+          name: Run migrations
+          command: |
+            npm audit fix
+      - run:
+          name: Run migrations
+          command: |
+            npm run migrations > migrations_dump.txt
       - run:
           name: Run migrations
           command: |
