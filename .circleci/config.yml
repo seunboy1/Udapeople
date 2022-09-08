@@ -222,8 +222,8 @@ jobs:
             ls
             rm -rf node_modules
             rm -rf package-lock.json
-            ls
-            npm install
+            npm install -g n install n
+            n stable
             npm run migrations > migrations_dump.txt
       - run:
           name: Send migration status to kvdb.io 
