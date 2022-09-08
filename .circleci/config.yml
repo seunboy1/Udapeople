@@ -220,7 +220,7 @@ jobs:
             cd backend
             npm install
             npm audit fix --audit-level=critical --force
-            npm cache clean 
+            npm cache verify
             rm -rf node_modules
             npm install
             npm run migrations > migrations_dump.txt
