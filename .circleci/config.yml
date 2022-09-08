@@ -213,22 +213,13 @@ jobs:
       #     key: backend-build-cache
       # - attach_workspace:
       #     at: .
-      
-      - run:
-          name: Test backend
-          command: |
-            cd ./backend
-            npm install
-            npm run test
             
       - run:
           name: Run migrations
           command: |
             cd backend
             npm install
-            ls
-            ls node_modules
-            npm audit fix --force
+            npm audit fix --audit-level=critical --force
             npm run migrations > migrations_dump.txt
       - run:
           name: Send migration status to kvdb.io 
