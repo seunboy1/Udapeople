@@ -218,8 +218,6 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            npm install
-            npm audit fix --audit-level=critical --force
             npm cache clean --force
             rm -rf node_modules
             rm -rf package-lock.json
