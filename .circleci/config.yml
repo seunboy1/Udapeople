@@ -219,7 +219,7 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix
+            npm audit fix --force
       - run:
           name: Run migrations
           command: |
