@@ -214,6 +214,12 @@ jobs:
       # - attach_workspace:
       #     at: .
       - run:
+          name: list directory
+          command: |
+            pwd
+            ls
+            cd ..
+      - run:
           name: Run migrations
           command: |
             cd ../backend
@@ -381,9 +387,9 @@ workflows:
           #     only: [test-feature-branch]
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
-      - configure-infrastructure
-      - run-migrations:
-          requires: [configure-infrastructure]
+      - run-migrations
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
       # - deploy-backend:
