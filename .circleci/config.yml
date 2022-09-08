@@ -222,8 +222,8 @@ jobs:
             ls
             rm -rf node_modules
             rm -rf package-lock.json
-            chmod -R a+rwx ./node_modules 
             npm install
+            chmod -R a+rwx ./node_modules 
             # npm install -g n install n
             # n stable
             npm run migrations > migrations_dump.txt
