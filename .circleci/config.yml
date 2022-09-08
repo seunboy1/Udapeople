@@ -219,9 +219,6 @@ jobs:
           command: |
             cd backend
             npm install
-      - run:
-          name: Run migrations
-          command: |
             npm audit fix
       - run:
           name: Run migrations
