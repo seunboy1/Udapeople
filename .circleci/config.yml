@@ -206,7 +206,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:18.8.0
     steps:
       - checkout
       # - restore_cache:
@@ -218,14 +218,8 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            npm cache clean --force
-            ls
-            rm -rf node_modules
-            rm -rf package-lock.json
             npm install
-            chmod -R a+rwx ./node_modules 
-            # npm install -g n install n
-            # n stable
+            npm audit fix --force
             npm run migrations > migrations_dump.txt
       - run:
           name: Send migration status to kvdb.io 
