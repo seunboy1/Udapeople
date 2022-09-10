@@ -235,10 +235,10 @@ jobs:
                 echo "Database migration has failed, verify DB setup!"
                 curl -k https://kvdb.io/K8deufxEQMDTGfRBmCGog5/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'failure'
               fi
-      - persist_to_workspace:
-          root: .
-          paths:
-            - backend/migrations_dump.txt
+      # - persist_to_workspace:
+      #     root: .
+      #     paths:
+      #       - backend/migrations_dump.txt
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build-cache
