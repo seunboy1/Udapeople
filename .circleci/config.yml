@@ -160,6 +160,7 @@ jobs:
           name: Deploy frontend infrastructure
           command: |
             aws cloudformation deploy --template-file .circleci/files/frontend.yml --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+            
       - run:
           name: Add backend ip to ansible inventory
           # working_directory: ./.circleci/ansible
@@ -169,10 +170,15 @@ jobs:
               --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> .circleci/files/inventory.txt
             cat .circleci/files/inventory.txt
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .circleci/ansible/inventory.txt
+      
       # - persist_to_workspace:
-      #     root: .
+      #     root: ~/
       #     paths:
-      #       - .circleci/ansible/inventory.txt
+      #       - project/.circleci/ansible/inventory.txt
       # - destroy_environment:
       #     workflowID: ${CIRCLE_WORKFLOW_ID:0:7} 
 
