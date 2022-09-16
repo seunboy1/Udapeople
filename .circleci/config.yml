@@ -224,7 +224,7 @@ jobs:
             npm run migrations > migrations_dump.txt
             ls -al
             cat migrations_dump.txt
-            
+
       # - run:
       #     name: Run migrations
       #     command: |
@@ -245,59 +245,61 @@ jobs:
                 echo "Database migration has failed, verify DB setup!"
                 curl -k https://kvdb.io/K8deufxEQMDTGfRBmCGog5/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'failure'
               fi
-      # - persist_to_workspace:
-      #     root: .
-      #     paths:
-      #       - backend/migrations_dump.txt
+      - persist_to_workspace:
+          root: .
+          paths:
+            - backend/migrations_dump.txt
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build
       # - destroy_environment:
       #     workflowID: ${CIRCLE_WORKFLOW_ID:0:7}    
 
-  # deploy-frontend:
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     - checkout
-  #     - run: yum install -y tar gzip
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: Install dependencies
-  #         command: |
-  #           yum install -y python3
-  #           curl --silent --location https://rpm.nodesource.com/setup_16.x | bash -
-  #           yum install -y nodejs
-  #           python3 -m pip -V
-  #           if [ $? -eq 0 ]
-  #           then
-  #             python3 -m pip install --user ansible
-  #           fi
+  deploy-frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: yum install -y tar gzip
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y python3
+            curl --silent --location https://rpm.nodesource.com/setup_16.x | bash -
+            yum install -y nodejs
+            python3 -m pip -V
+            if [ $? -eq 0 ]
+            then
+              python3 -m pip install --user ansible
+            fi
 
-      # - run:
-      #     name: Get backend url and setup environment variables
-      #     command: |
-      #       export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
-      #       export API_URL="http://${BACKEND_IP}:3030"
-      #       echo "new API_URL to be baked into FE = ${API_URL}"
-      #       echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-      #       cat frontend/.env
-      # - run:
-      #     name: Deploy frontend objects
-      #     command: |
-      #       cd frontend
-      #       npm install
-      #       npm run build
-      #       tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-      #       aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      # - save_cache:
-      #     paths: [frontend/node-modules]
-      #     key: frontend-build-cache
-      # - destroy_environment:
-      #     workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-      # - revert_migrations:
-      #     workflowID: ${CIRCLE_WORKFLOW_ID:0:7} 
+      - run:
+          name: Get backend url and setup environment variables
+          command: |
+            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "new API_URL to be baked into FE = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
+      - restore_cache:
+          key: frontend-build
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      - save_cache:
+          paths: [frontend/node-modules]
+          key: frontend-build
+      - destroy_environment:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert_migrations:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7} 
                     
 #   deploy-backend:
 #     docker:
