@@ -1,50 +1,50 @@
 version: 2.1
 
-# commands:
-#   destroy_environment:
-#     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-#     parameters:
-#       workflowID:
-#         type: string  
-#         default: ${CIRCLE_WORKFLOW_ID:0:7} 
-#     steps:
-#       - run:
-#           name: Echo workflow ID that is going be be destroyed
-#           when: on_fail
-#           command: echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
-#       - run:
-#           name: Destroy backend stack
-#           when: on_fail
-#           command: |
-#             # aws s3 rm s3://udapeople-<< parameters.workflowID >> --recursive
-#             # aws s3 rb s3://udapeople-<< parameters.workflowID >> --force
-#             aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.workflowID >>
-#       - run:
-#           name: Destroy frontend stack
-#           when: on_fail
-#           command: |
-#             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflowID >>
+commands:
+  destroy_environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      workflowID:
+        type: string  
+        default: ${CIRCLE_WORKFLOW_ID:0:7} 
+    steps:
+      - run:
+          name: Echo workflow ID that is going be be destroyed
+          when: on_fail
+          command: echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Destroy backend stack
+          when: on_fail
+          command: |
+            # aws s3 rm s3://udapeople-<< parameters.workflowID >> --recursive
+            # aws s3 rb s3://udapeople-<< parameters.workflowID >> --force
+            aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.workflowID >>
+      - run:
+          name: Destroy frontend stack
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflowID >>
 
-#   revert_migrations:
-#     description: Revert the last migration if successfully run in the current workflow.
-#     parameters:
-#       workflowID:
-#         type: string
-#         default: ${CIRCLE_WORKFLOW_ID:0:7}      
-#     steps:
-#       - run:
-#           name: Revert migrations
-#           when: on_fail
-#           command: |
-#             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-#             SUCCESS=$(curl --insecure https://kvdb.io/K8deufxEQMDTGfRBmCGog5/migration_<< parameters.workflowID >>)
-#             echo $SUCCESS
-#             if(( $SUCCESS == "success" )); 
-#             then
-#               cd ./backend
-#               npm install
-#               npm run migrations:revert
-#             fi  
+  revert_migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      workflowID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}      
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            SUCCESS=$(curl --insecure https://kvdb.io/K8deufxEQMDTGfRBmCGog5/migration_<< parameters.workflowID >>)
+            echo $SUCCESS
+            if(( $SUCCESS == "success" )); 
+            then
+              cd ./backend
+              npm install
+              npm run migrations:revert
+            fi  
 
 jobs:
   build-frontend:
