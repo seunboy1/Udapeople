@@ -224,6 +224,7 @@ jobs:
             npm run migrations > migrations_dump.txt
             ls -al
             cat migrations_dump.txt
+            
       # - run:
       #     name: Run migrations
       #     command: |
