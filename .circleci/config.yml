@@ -225,7 +225,9 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ./backend/.env
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ./backend/.env
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ./backend/.env
+            ls
             cat ./backend/.env
+            pwd
             cd ./.circleci/ansible
             ansible-playbook configure-server.yml -i inventory.txt
       - persist_to_workspace:
