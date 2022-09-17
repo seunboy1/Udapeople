@@ -227,7 +227,7 @@ jobs:
             cd ./backend
             pwd
             ls 
-            cat /.env
+            cat ./.env
             npm install
             npm run migrations > migrations_dump.txt
             cat ./migrations_dump.txt
@@ -249,8 +249,8 @@ jobs:
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build
-      - destroy_environment:
-          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}  
+      # - destroy_environment:
+      #     workflowID: ${CIRCLE_WORKFLOW_ID:0:7}  
         
 
   deploy-frontend:
