@@ -387,33 +387,33 @@ jobs:
       - destroy_environment
       - revert_migrations
 
-cloudfront-update:
-    docker:
-      - image: amazon/aws-cli
-    working_directory: .
-    steps:
-      - checkout
-      - run: yum install -y tar gzip
-      - run:
-          name: Fetch and save the old workflow ID responsible for the last release.
-          command: |
-            OldWorkflowID=$(aws cloudformation list-exports --query "Exports[?Name==\`WorkflowID\`].Value" --no-paginate --output text)
-            echo $OldWorkflowID > OldWorkflowID.txt
-            cat OldWorkflowID.txt
-      - run:
-          name: Execute CloudFront template
-          no_output_timeout: 30m
-          command: |
-            OldWorkflowID=$(cat OldWorkflowID.txt)
-            aws cloudformation deploy --template-file .circleci/files/cloudfront.yml --stack-name InitialStack --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" --tags project=udapeople
-            echo "OldWorkflowID: ${OldWorkflowID}"
-            echo "NewWorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}"
-      - persist_to_workspace:
-          root:  .
-          paths:
-            - OldWorkflowID.txt
-      - destroy_environment
-      - revert_migrations
+  cloudfront-update:
+      docker:
+        - image: amazon/aws-cli
+      working_directory: .
+      steps:
+        - checkout
+        - run: yum install -y tar gzip
+        - run:
+            name: Fetch and save the old workflow ID responsible for the last release.
+            command: |
+              OldWorkflowID=$(aws cloudformation list-exports --query "Exports[?Name==\`WorkflowID\`].Value" --no-paginate --output text)
+              echo $OldWorkflowID > OldWorkflowID.txt
+              cat OldWorkflowID.txt
+        - run:
+            name: Execute CloudFront template
+            no_output_timeout: 30m
+            command: |
+              OldWorkflowID=$(cat OldWorkflowID.txt)
+              aws cloudformation deploy --template-file .circleci/files/cloudfront.yml --stack-name InitialStack --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" --tags project=udapeople
+              echo "OldWorkflowID: ${OldWorkflowID}"
+              echo "NewWorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}"
+        - persist_to_workspace:
+            root:  .
+            paths:
+              - OldWorkflowID.txt
+        - destroy_environment
+        - revert_migrations
 
 # cleanup:
 #     docker:
@@ -448,11 +448,12 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      # - deploy-infrastructure:
+      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
           #   branches:
           #     only: [main]
+      - deploy-infrastructure
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
