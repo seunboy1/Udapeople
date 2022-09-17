@@ -15,22 +15,9 @@ parameters:
     default: ""
 
 orbs: 
-  slack: circleci/slack@4.10.1
   aws-cli: circleci/aws-cli@3.1
 
 commands:
-  notify_slack:
-    description: Send slack notification on failure
-    steps:
-      - slack/notify:
-          event: fail
-          mentions: '@airahyusuff'
-          template: basic_fail_1
-      # - slack/notify:
-      #     event: pass
-      #     channel: C03Q56HMW4R
-      #     mentions: '@airahyusuff'
-      #     template: basic_success_1
 
   destroy_environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -83,7 +70,6 @@ jobs:
       - save_cache:
           paths: [frontend/node-modules]
           key: frontend-build
-      - notify_slack
 
   build_backend:
     docker:
@@ -101,7 +87,6 @@ jobs:
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build
-      - notify_slack      
   
   test_frontend:
     docker:
@@ -119,7 +104,6 @@ jobs:
       - save_cache:
           paths: [frontend/node-modules]
           key: frontend-build
-      - notify_slack
 
   test_backend:
     docker:
@@ -137,7 +121,6 @@ jobs:
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build
-      - notify_slack
   
   audit_frontend:
     docker:
@@ -156,7 +139,6 @@ jobs:
       - save_cache:
           paths: [frontend/node-modules]
           key: frontend-build
-      - notify_slack
 
   audit_backend:
     docker:
@@ -176,7 +158,6 @@ jobs:
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build
-      - notify_slack
 
   deploy_infra:
     docker:
@@ -201,7 +182,6 @@ jobs:
           root:  ~/project
           paths:
             - .circleci/ansible/inventory.txt
-      - notify_slack
       - destroy_environment
 
   configure_infra:
@@ -240,7 +220,7 @@ jobs:
           root:  ~/project
           paths:
             - backend/.env
-      - notify_slack
+      - destroy_environment
 
   run_migrations:
     docker:
@@ -274,7 +254,7 @@ jobs:
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build
-      - notify_slack
+      - destroy_environment
 
   deploy_frontend:
     docker:
@@ -324,7 +304,6 @@ jobs:
       - save_cache:
           paths: [frontend/node-modules]
           key: frontend-build
-      - notify_slack
       - destroy_environment
       - revert_migrations
 
@@ -361,8 +340,7 @@ jobs:
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build
-      - notify_slack 
-      # - destroy_environment
+      - destroy_environment
       - revert_migrations
 
   smoke_tests:
@@ -401,7 +379,6 @@ jobs:
             else
               exit 1
             fi
-      - notify_slack
       - destroy_environment
       - revert_migrations
 
@@ -430,7 +407,6 @@ jobs:
           root:  ~/project
           paths:
             - OldWorkflowID.txt
-      - notify_slack
       - destroy_environment
       - revert_migrations
 
@@ -458,7 +434,6 @@ jobs:
             else
               echo "This is the new BE + FE infrastructure: workflowID --> ${CIRCLE_WORKFLOW_ID:0:7}"
             fi
-      - notify_slack
       # - destroy_environment
       # - revert_migrations
 
@@ -478,25 +453,25 @@ workflows:
           requires: [build_frontend]
       - audit_backend:
           requires: [build_backend]
-      - deploy_infra:
-          requires: [test_backend, test_frontend, audit_backend, audit_frontend]
-          filters:
-            branches:
-              only: [master]
-      - configure_infra:
-          requires: [deploy_infra]
-      - run_migrations:
-          requires: [configure_infra]
-      - deploy_frontend:
-          requires: [run_migrations]
-      - deploy_backend:
-          requires: [run_migrations]
-      - smoke_tests:
-          requires: [deploy_frontend, deploy_backend]
-      - cloudfront_update:
-          requires: [smoke_tests]
-      - cleanup:
-          requires: [cloudfront_update]
+      # - deploy_infra:
+      #     requires: [test_backend, test_frontend, audit_backend, audit_frontend]
+      #     filters:
+      #       branches:
+      #         only: [master]
+      # - configure_infra:
+      #     requires: [deploy_infra]
+      # - run_migrations:
+      #     requires: [configure_infra]
+      # - deploy_frontend:
+      #     requires: [run_migrations]
+      # - deploy_backend:
+      #     requires: [run_migrations]
+      # - smoke_tests:
+      #     requires: [deploy_frontend, deploy_backend]
+      # - cloudfront_update:
+      #     requires: [smoke_tests]
+      # - cleanup:
+      #     requires: [cloudfront_update]
     
   # build:
   #   jobs:
