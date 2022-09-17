@@ -129,6 +129,7 @@ jobs:
           name: Scan frontend
           command: |
             cd ./frontend
+            npm install
             npm audit fix --audit-level=critical --force
 
             
@@ -499,9 +500,9 @@ workflows:
           requires: [build-frontend]
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters: 
-            branches: 
-              only: [master]
+          # filters: 
+          #   branches: 
+          #     only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
