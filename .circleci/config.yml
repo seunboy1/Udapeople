@@ -199,7 +199,8 @@ jobs:
             ls 
             cd ./backend
             ls -la
-            cat .env.sample
+            touch ./.env
+            cat ./.env
       - run:
           name: Configure backend server
           command: |
