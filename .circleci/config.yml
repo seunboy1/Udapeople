@@ -14,6 +14,7 @@ commands:
           command: echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Destroy backend stack
+          
           when: on_fail
           command: |
             # aws s3 rm s3://udapeople-<< parameters.workflowID >> --recursive
