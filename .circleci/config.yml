@@ -342,7 +342,7 @@ jobs:
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
-            # export ANSIBLE_HOST_KEY_CHECKING=false
+            export ANSIBLE_HOST_KEY_CHECKING=false
             ansible-playbook deploy-backend.yml -i inventory.txt
       - save_cache:
           paths: [backend/node-modules]
@@ -444,7 +444,6 @@ jobs:
 #               # your code here
 #             fi
             
-
 workflows:
   default:
     jobs:
@@ -472,8 +471,8 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
-      # - smoke-test:
-      #     requires: [deploy-backend, deploy-frontend]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
