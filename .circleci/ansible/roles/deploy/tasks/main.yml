@@ -1,32 +1,47 @@
 ---
-- name: Upgrade npm
-  become: true
-  shell: |
-    npm install -g npm@latest
+  # - name: "update apt packages."
+  #   become: true
+  #   apt:
+  #     update_cache: true
 
-- name: Copy compiled files
-  unarchive:
-    src: /root/project/backend.tar.gz
-    dest: /home/ubuntu/
-
-- name: Build backend
-  ignore_errors: yes
-  shell: |
-    cd /home/ubuntu/backend
-    npm i
-    npm run build
-
-- name: Stop and delete already running server
-  ignore_errors: yes
-  shell: |
-    pm2 stop backend
-    pm2 delete backend
-
-- name: Start server
-  become: true
-  shell: |
-    cd /home/ubuntu/backend
-    pm2 start npm --name backend -- start
-    pm2 ls
-
+  # - name: "upgrade packages"
+  #   become: true
+  #   apt:
+  #     upgrade: true
   
+  # - name: "install node dependencies"
+  #   become: true
+  #   apt:
+  #     name: ["nodejs", "npm"]
+  #     state: latest
+  #     update_cache: yes
+  
+  # - name: "install pm2"
+  #   become: true
+  #   npm:
+  #     name: pm2
+  #     global: yes
+  #     production: yes
+  #     state: latest
+
+  - name: "Extract backend artifact"
+    unarchive:
+      src: ~/project/artifact.tar.gz
+      dest: /home/ubuntu
+
+  - name: "start server"
+    become: true
+    shell: |
+      npm install
+      pm2 stop default
+      sudo pm2 start npm -- start
+    environment:
+      - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"  
+      - TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}"
+      - TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST')}}"
+      - TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT')}}"
+      - TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME')}}"
+      - TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD')}}"
+      - TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}"
+      - TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
+      - TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"

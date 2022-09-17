@@ -1,61 +1,61 @@
-We are archiving this repository because we do not want learners to push personal development to the current repository. If you have any issues or suggestions to make, feel free to:
-- Utilize the https://knowledge.udacity.com/ forum to seek help on content-specific issues.
-- [Submit a support ticket](https://udacity.zendesk.com/hc/en-us/requests/new) along with the link to your forked repository. 
-- If you are an enterprise learner, please [Submit a support ticket here](https://udacityenterprise.zendesk.com/hc/en-us/requests/new?ticket_form_id=360000279131)
 
-## Give your Application Auto-Deploy Superpowers
+# Udacity Cloud DevOps Engineer Nanodegree Project 3
+My repo for the third nanodegree project - Give your Application Auto-Deploy Superpowers.
 
-In this project, you will prove your mastery of the following learning objectives:
+## Repo Structure
+It contains the following files:
+1. CircleCI + Ansible configurations - `.circleci` folder
+2. GitHub Actions workflow to trigger CircleCI - `.github` folder
+3. Backend app - `backend` folder
+4. Frontend app - `frontend` folder
+5. Screenshots folder - `screenshots`
 
-- Explain the fundamentals and benefits of CI/CD to achieve, build, and deploy automation for cloud-based software products.
-- Utilize Deployment Strategies to design and build CI/CD pipelines that support Continuous Delivery processes.
-- Utilize a configuration management tool to accomplish deployment to cloud-based servers.
-- Surface critical server errors for diagnosis using centralized structured logging.
+Submitted deploy URL: http://udapeople-01dd2a8.s3-website-us-east-1.amazonaws.com
+<br/>
 
-![Diagram of CI/CD Pipeline we will be building.](udapeople.png)
 
-### Instructions
+## What's Needed
+Links to resources are at the end:
+### 1. AWS
+You would need to have an AWS account (a free tier works, but please take note of resources that are not free/eligible for free tier)
 
-* [Selling CI/CD](instructions/0-selling-cicd.md)
-* [Getting Started](instructions/1-getting-started.md)
-* [Deploying Working, Trustworthy Software](instructions/2-deploying-trustworthy-code.md)
-* [Configuration Management](instructions/3-configuration-management.md)
-* [Turn Errors into Sirens](instructions/4-turn-errors-into-sirens.md)
+### 2. CircleCI
+Cloud-based CI-CD tool
 
-### Project Submission
+### 3. Ansible
+Configuration management tool
 
-For your submission, please submit the following:
+### 4. Prometheus
+Environment monitoring tool
 
-- A text file named `urls.txt` including:
-  1. Public Url to GitHub repository (not private) [URL01]
-  1. Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]
-  1. Public URL for your CloudFront distribution (aka, your blue production front-end) [URL03]
-  1. Public URLs to deployed application back-end in EC2 [URL04]
-  1. Public URL to your Prometheus Server [URL05]
-- Your screenshots in JPG or PNG format, named using the screenshot number listed in the instructions. These screenshots should be included in your code repository in the root folder.
-  1. Job failed because of compile errors. [SCREENSHOT01]
-  1. Job failed because of unit tests. [SCREENSHOT02]
-  1. Job that failed because of vulnerable packages. [SCREENSHOT03]
-  1. An alert from one of your failed builds. [SCREENSHOT04]
-  1. Appropriate job failure for infrastructure creation. [SCREENSHOT05]
-  1. Appropriate job failure for the smoke test job. [SCREENSHOT06]
-  1. Successful rollback after a failed smoke test. [SCREENSHOT07]  
-  1. Successful promotion job. [SCREENSHOT08]
-  1. Successful cleanup job. [SCREENSHOT09]
-  1. Only deploy on pushed to `master` branch. [SCREENSHOT10]
-  1. Provide a screenshot of a graph of your EC2 instance including available memory, available disk space, and CPU usage. [SCREENSHOT11]
-  1. Provide a screenshot of an alert that was sent by Prometheus. [SCREENSHOT12]
+<br/>
 
-- Your presentation should be in PDF format named "presentation.pdf" and should be included in your code repository root folder. 
+## How to run
 
-Before you submit your project, please check your work against the project rubric. If you haven’t satisfied each criterion in the rubric, then revise your work so that you have met all the requirements. 
+1. Create AWS RDS database
+2. Setup repo as a CircleCI project and add all necessary configurations: Environment variables, SSH keys, API tokens(for GitHub actions trigger), Slack integrations(for alerts), etc
+3. Create a sample **public** S3 bucket
+4. Setup a CloudFront distribution using CloudFormation; `.circleci/files/cloudfront.yml`
+5. Sign up and set up a key bucket on [KVDB](https://kvdb.io/) (needed inside the circleci `config.yml` file)
+6. Run `config.yml` file
+7. **Extras:** Setup an EC2 instance for Prometheus and add monitoring configurations
+
+<br/>
+
+## Confirm Your Running App
+
+1) **Frontend app:** `S3-Bucket-URL` (Grab from CloudFormation stack) or CloudFront distribution link
+2) **Backend app:** `[your-backend-EC2-DNS]:3030/api/status`
+3) **Database:** setup postgres db server with pgAdmin
+
+<br/>
 
 ### Built With
-
-- [Circle CI](www.circleci.com) - Cloud-based CI/CD service
 - [Amazon AWS](https://aws.amazon.com/) - Cloud services
-- [AWS CLI](https://aws.amazon.com/cli/) - Command-line tool for AWS
-- [CloudFormation](https://aws.amazon.com/cloudformation/) - Infrastrcuture as code
+- [AWS CLI](https://aws.amazon.com/cli/) - AWS Command-line tool
+- [CloudFormation](https://aws.amazon.com/cloudformation/) - Infrastructure-as-code (IaC)
+- [Circle CI](www.circleci.com) - Cloud-based CI/CD service
+- [GitHub Actions](https://github.com/features/actions) - Cloud-based CI/CD service
 - [Ansible](https://www.ansible.com/) - Configuration management tool
 - [Prometheus](https://prometheus.io/) - Monitoring tool
 
