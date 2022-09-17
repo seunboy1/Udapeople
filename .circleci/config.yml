@@ -208,7 +208,7 @@ jobs:
             echo TYPEORM_PORT=5432 >> ./backend/.env
             echo TYPEORM_USERNAME=saddy >> ./backend/.env
             echo TYPEORM_PASSWORD=saddy123456 >> ./backend/.env
-            echo NODE_ENV=production > ./backend/.env
+            # echo NODE_ENV=production > ./backend/.env
             echo TYPEORM_DATABASE=first_test_db >> ./backend/.env
             ls -la ./backend
             cat ./backend/.env
