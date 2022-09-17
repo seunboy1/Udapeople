@@ -163,7 +163,7 @@ jobs:
             
       - run:
           name: Add backend ip to ansible inventory
-          working_directory: ./.circleci/ansible
+          # working_directory: ./.circleci/ansible
           command: |
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
