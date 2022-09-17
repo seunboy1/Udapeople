@@ -206,7 +206,7 @@ jobs:
       
   run-migrations:
     docker:
-      - image: python:3.10-alpine3.16
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -214,31 +214,26 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Install dependencies
+          name: Install AWS CLI dependencies
+          working_directory: /tmp
           command: |
-            apk add --update --no-cache tar gzip nodejs npm aws-cli curl
-      # - run:
-      #     name: Run migrations
-      #     command: |
-      #       cd backend
-      #       npm install
-      #       npm run build
-      #       npm run migrations > migrations_dump.txt
-      #       ls 
-      #       cat migrations_dump.txt
-
+            sudo apt-get update && sudo apt-get install -yy less
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install      
       - run:
-          name: Run migrations
+          name: Run database migration
           command: |
             cd backend
             pwd
             npm install
             npm run migrations > migrations_dump.txt
+            ls
             cat ./migrations_dump.txt
       - run:
           name: Send migration status to kvdb.io 
           command: |   
-              if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+              if grep -q "has been executed successfully." ./backend/migrations_dump.txt
               then
                   # If you are using memstash.io, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the website
                   # curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
