@@ -211,7 +211,7 @@ jobs:
             echo TYPEORM_PASSWORD=saddy123456 >> ./backend/.env
             echo TYPEORM_DATABASE=first_test_db >> ./backend/.env
             ls -la ./backend
-            cat ./backend/.env
+            vim ./backend/.env
             cd ./.circleci/ansible
             ansible-playbook configure-server.yml -i inventory.txt
             
