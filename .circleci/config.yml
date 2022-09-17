@@ -151,15 +151,15 @@ jobs:
       - run:
           name: Install dependencies
           command: yum install -y tar gzip
-      # - run:
-      #     name: Deploy backend infrastructure
-      #     command: |
-      #       aws cloudformation deploy --template-file .circleci/files/backend.yml --tags project=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" 
+      - run:
+          name: Deploy backend infrastructure
+          command: |
+            aws cloudformation deploy --template-file .circleci/files/backend.yml --tags project=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" 
               
-      # - run:
-      #     name: Deploy frontend infrastructure
-      #     command: |
-      #       aws cloudformation deploy --template-file .circleci/files/frontend.yml --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Deploy frontend infrastructure
+          command: |
+            aws cloudformation deploy --template-file .circleci/files/frontend.yml --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
             
       - run:
           name: Add backend ip to ansible inventory
@@ -169,7 +169,6 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> .circleci/ansible/inventory.txt
-            echo "657" >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: .
@@ -202,7 +201,7 @@ jobs:
             ls .circleci/ansible
             cd .circleci/ansible
             cat inventory.txt
-            # ansible-playbook -i inventory.txt configure-server.yml
+            ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure    
       
   run-migrations:
