@@ -187,23 +187,38 @@ jobs:
           fingerprints: ["ba:9e:f8:f2:df:88:41:c0:73:31:9c:33:f4:0f:18:e0"]
       - attach_workspace:
           at: .
+      
       - run:
           name: Install dependencies
-          # working_directory: ./.circleci/ansible
+          working_directory: ./.circleci/ansible
           command: |
             apk add --update tar gzip
             apk add --update openssh
             apk add --update curl
             apk add --update ansible
       - run:
-          name: Configure server
+          name: Configure backend server
           command: |
-            ls .circleci/ansible
-            cd .circleci/ansible
-            cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yml
-      # Here's where you will add some code to rollback on failure   
-
+            echo NODE_ENV=production > ./backend/.env
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ./backend/.env
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ./backend/.env
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ./backend/.env
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ./backend/.env
+            echo TYPEORM_HOST=$TYPEORM_HOST >> ./backend/.env
+            echo TYPEORM_PORT=$TYPEORM_PORT >> ./backend/.env
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ./backend/.env
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ./backend/.env
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ./backend/.env
+            cat ./backend/.env
+            cd ./.circleci/ansible
+            ansible-playbook configure-server.yml -i inventory.txt
+      - persist_to_workspace:
+          root:  .
+          paths:
+            - backend/.env
+#      - destroy_environment:
+#          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+            
   run-migrations:
     docker:
       - image: circleci/node:13.8.0
