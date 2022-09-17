@@ -17,7 +17,7 @@ commands:
           when: on_fail
           command: |
             # aws s3 rm s3://udapeople-<< parameters.workflowID >> --recursive
-            # aws s3 rb s3://udapeople-<< parameters.workflowID >> --force
+            aws s3 rb --force s3://udapeople-<< parameters.workflowID >> 
             aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.workflowID >>
       - run:
           name: Destroy frontend stack
@@ -211,8 +211,8 @@ jobs:
       - checkout
       - restore_cache:
           key: backend-build
-      # - attach_workspace:
-      #     at: .
+      - attach_workspace:
+          at: .
       - run:
           name: Install dependencies
           command: |
@@ -224,7 +224,7 @@ jobs:
             npm install
             npm run build
             npm run migrations > migrations_dump.txt
-            ls -al
+            ls 
             cat migrations_dump.txt
 
       # - run:
@@ -254,8 +254,8 @@ jobs:
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build
-      # - destroy_environment:
-      #     workflowID: ${CIRCLE_WORKFLOW_ID:0:7}    
+      - destroy_environment:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}    
 
   deploy-frontend:
     docker:
@@ -458,8 +458,8 @@ workflows:
       - deploy-infrastructure
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]
       # - deploy-backend:
