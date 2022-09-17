@@ -196,6 +196,9 @@ jobs:
             apk add --update openssh
             apk add --update curl
             apk add --update ansible
+            ls 
+            cd ./backend
+            ls -la
       - run:
           name: Configure backend server
           command: |
@@ -209,7 +212,7 @@ jobs:
             # echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ./backend/.env
             # echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ./backend/.env
             # echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ./backend/.env
-            ls -la
+            ls -la ./backend
             cat ./backend/.env
             cd ./.circleci/ansible
             ansible-playbook configure-server.yml -i inventory.txt
@@ -471,9 +474,10 @@ workflows:
           # filters:
           #   branches:
           #     only: [main]
-      - deploy-infrastructure
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
+      # - deploy-infrastructure
+      - configure-infrastructure
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
       - deploy-frontend:
