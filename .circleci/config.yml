@@ -240,8 +240,8 @@ jobs:
           root:  .
           paths:
             - backend/.env
-      - destroy_environment:
-          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+#      - destroy_environment:
+#          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
             
   run-migrations:
     docker:
@@ -382,8 +382,8 @@ jobs:
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build-cache
-      - destroy_environment:
-          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+#      - destroy_environment:
+#          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert_migrations:
           workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
 
