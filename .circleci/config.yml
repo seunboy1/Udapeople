@@ -404,8 +404,11 @@ jobs:
             else
               exit 0
             fi
-      - destroy_environment
-      - revert_migrations
+        
+      - destroy_environment:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert_migrations:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
 
   cloudfront-update:
       docker:
@@ -432,8 +435,10 @@ jobs:
             root:  .
             paths:
               - OldWorkflowID.txt
-        - destroy_environment
-        - revert_migrations
+        - destroy_environment:
+            workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+        - revert_migrations:
+            workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
 
 # cleanup:
 #     docker:
