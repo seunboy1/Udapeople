@@ -199,17 +199,17 @@ jobs:
       - run:
           name: Configure backend server
           command: |
-            # touch ./backend/.env
-            # echo NODE_ENV=production > ./backend/.env
-            # echo TYPEORM_CONNECTION=postgres >> ./backend/.env
-            # echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> ./backend/.env
-            # echo TYPEORM_ENTITIES=./src/modules/domain/\*\*/\*.entity.ts >> ./backend/.env
-            # echo TYPEORM_MIGRATIONS=./src/migrations/\*.ts>> ./backend/.env
-            # echo TYPEORM_HOST=mydatabase-instance.cdmgk4mp4ilu.eu-west-1.rds.amazonaws.com >> ./backend/.env
-            # echo TYPEORM_PORT=5432 >> ./backend/.env
-            # echo TYPEORM_USERNAME=saddy >> ./backend/.env
-            # echo TYPEORM_PASSWORD=saddy123456 >> ./backend/.env
-            # echo TYPEORM_DATABASE=first_test_db >> ./backend/.env
+            touch ./backend/.env
+            echo NODE_ENV=production > ./backend/.env
+            echo TYPEORM_CONNECTION=postgres >> ./backend/.env
+            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> ./backend/.env
+            echo TYPEORM_ENTITIES=./src/modules/domain/\*\*/\*.entity.ts >> ./backend/.env
+            echo TYPEORM_MIGRATIONS=./src/migrations/\*.ts>> ./backend/.env
+            echo TYPEORM_HOST=mydatabase-instance.cdmgk4mp4ilu.eu-west-1.rds.amazonaws.com >> ./backend/.env
+            echo TYPEORM_PORT=5432 >> ./backend/.env
+            echo TYPEORM_USERNAME=saddy >> ./backend/.env
+            echo TYPEORM_PASSWORD=saddy123456 >> ./backend/.env
+            echo TYPEORM_DATABASE=first_test_db >> ./backend/.env
             ls -la ./backend
             vim ./backend/.env
             cd ./.circleci/ansible
@@ -222,9 +222,10 @@ jobs:
 #      - destroy_environment:
 #          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
             
+  
   run-migrations:
     docker:
-      - image: circleci/node:13.8.0
+      - image: python:3.10-alpine3.16
     steps:
       - checkout
       - restore_cache:
@@ -232,34 +233,43 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Install AWS CLI dependencies
-          working_directory: /tmp
+          name: Install dependencies
           command: |
-            sudo apt-get update && sudo apt-get install -yy less
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install      
+            apk add --update --no-cache tar gzip nodejs npm aws-cli curl
+      # - run:
+      #     name: Run migrations
+      #     command: |
+      #       cd backend
+      #       npm install
+      #       npm run build
+      #       npm run migrations > migrations_dump.txt
+      #       ls 
+      #       cat migrations_dump.txt
+
       - run:
-          name: Run database migration
+          name: Run migrations
           command: |
-            cd ./backend
+            cd backend
             pwd
-            ls -la
-            cat ./.env
             npm install
             npm run migrations > migrations_dump.txt
+            ls
             cat ./migrations_dump.txt
       - run:
-          name: Send migration status to kvdb         
-          command: |
-            if grep "has been executed successfully" ./backend/migrations_dump.txt;
-            then
-              echo "Database migration has been executed successfully"
-              curl -k https://kvdb.io/Nu6oBUD5FWeLekYt2usN4c/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'success'
-            else
-              echo "Database migration has failed, verify DB setup!"
-              curl -k https://kvdb.io/Nu6oBUD5FWeLekYt2usN4c/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'failure'
-            fi
+          name: Send migration status to kvdb.io 
+          command: |   
+              ls
+              if grep -q "has been executed successfully." ./backend/migrations_dump.txt
+              then
+                  # If you are using memstash.io, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the website
+                  # curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+                  # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
+                echo "Database migration has been executed successfully"
+                curl https://kvdb.io/K8deufxEQMDTGfRBmCGog5/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'success'
+              else
+                echo "Database migration has failed, verify DB setup!"
+                curl -k https://kvdb.io/K8deufxEQMDTGfRBmCGog5/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'failure'
+              fi
       - persist_to_workspace:
           root: .
           paths:
@@ -267,9 +277,8 @@ jobs:
       - save_cache:
           paths: [backend/node-modules]
           key: backend-build
-      # - destroy_environment:
-      #     workflowID: ${CIRCLE_WORKFLOW_ID:0:7}  
-        
+      - destroy_environment:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}    
 
   deploy-frontend:
     docker:
@@ -472,10 +481,9 @@ workflows:
           # filters:
           #   branches:
           #     only: [main]
-      # - deploy-infrastructure
-      - configure-infrastructure
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
+      - deploy-infrastructure
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
       - deploy-frontend:
