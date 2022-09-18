@@ -477,7 +477,7 @@ workflows:
           # filters:
           #   branches:
           #     only: [main]
-      # - deploy-infrastructure
+      - deploy-infrastructure
       - configure-infrastructure
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
