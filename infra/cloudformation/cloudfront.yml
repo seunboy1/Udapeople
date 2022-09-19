@@ -1,0 +1,41 @@
+Description: >
+  Cloudfront distribution for UdaPeople.
+
+Parameters:
+  WorkflowId:
+    Description: Unique identifier.
+    Type: String
+
+Resources:
+  CloudFrontOriginAccessIdentity:
+    Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Origin Access Identity for Serverless Static Website
+
+  WebpageCDN:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: !Sub 'udapeople-${WorkflowId}.s3.amazonaws.com'
+            Id: webpage
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
+        Enabled: True
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          ForwardedValues:
+            QueryString: False
+          TargetOriginId: webpage
+          ViewerProtocolPolicy: allow-all
+
+Outputs:
+  WebsiteURL:
+    Value: !GetAtt WebpageCDN.DomainName
+    Description: Cloudfront URL for website hosted on S3
+  WorkflowId:
+    Description: Stack Workflow Id
+    Value: !Sub ${WorkflowId}
+    Export:
+      Name: WorkflowId

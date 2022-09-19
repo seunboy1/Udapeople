@@ -1,0 +1,18 @@
+---
+- name: 'Configuration play.'
+  hosts: web
+  become: yes
+  gather_facts: no
+  pre_tasks:
+    - name: 'Wait port 22 to become reachable/usable.'
+      wait_for:
+        port: 22
+        delay: 10
+    - name: 'Ensure python 3 available.'
+      become: yes
+      apt:
+        name: python3
+        state: present
+  roles:
+    - configure-server
+    # - configure-prometheus-node-exporter
