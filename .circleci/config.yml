@@ -234,7 +234,7 @@ jobs:
             pwd
             npm install
             npm audit fix --audit-level=critical --force
-            npm run build
+            # npm run build
             npm run migrations > migrations_dump.txt
             ls -la
             cat ./migrations_dump.txt
