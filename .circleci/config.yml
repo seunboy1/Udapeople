@@ -173,7 +173,7 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> ./infra/ansible/inventory.txt
-            cat .circleci/ansible/inventory.txt
+            cat ./infra/ansible/inventory.txt
             # aws cloudformation describe-stacks \
             # --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             # --query "Stacks[0].Outputs[0].OutputValue" \
