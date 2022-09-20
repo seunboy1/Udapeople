@@ -1,91 +1,64 @@
-# Udapeople DevOps Project
+We are archiving this repository because we do not want learners to push personal development to the current repository. If you have any issues or suggestions to make, feel free to:
+- Utilize the https://knowledge.udacity.com/ forum to seek help on content-specific issues.
+- [Submit a support ticket](https://udacity.zendesk.com/hc/en-us/requests/new) along with the link to your forked repository. 
+- If you are an enterprise learner, please [Submit a support ticket here](https://udacityenterprise.zendesk.com/hc/en-us/requests/new?ticket_form_id=360000279131)
 
-[![CircleCI](https://circleci.com/gh/ahmedaidev/udapeople/tree/main.svg?style=svg)](https://circleci.com/gh/ahmedaidev/udapeople/tree/main)
+## Give your Application Auto-Deploy Superpowers
 
-![pipeline](https://raw.githubusercontent.com/ahmedaidev/udapeople/master/pipeline.jpg)
+In this project, you will prove your mastery of the following learning objectives:
 
-A CI-CD pipeline for a client/server TypeScript project hosted on AWS EC2 and CloudFront and monitored with Prometheus, with Slack notifications used for alerts.
+- Explain the fundamentals and benefits of CI/CD to achieve, build, and deploy automation for cloud-based software products.
+- Utilize Deployment Strategies to design and build CI/CD pipelines that support Continuous Delivery processes.
+- Utilize a configuration management tool to accomplish deployment to cloud-based servers.
+- Surface critical server errors for diagnosis using centralized structured logging.
 
-## Prerequisites
+![Diagram of CI/CD Pipeline we will be building.](udapeople.png)
 
-- [Nodejs 13](https://nodejs.org/en/)
-- [Docker](https://www.docker.com/)
-- [GitHub account](https://github.com)
-- [CircleCi account](https://circleci.com)
-- [AWS account](https://aws.amazon.com/)
-- [ThisDB api key and bucket](https://thisdb.com)
+### Instructions
 
-## Development
+* [Selling CI/CD](instructions/0-selling-cicd.md)
+* [Getting Started](instructions/1-getting-started.md)
+* [Deploying Working, Trustworthy Software](instructions/2-deploying-trustworthy-code.md)
+* [Configuration Management](instructions/3-configuration-management.md)
+* [Turn Errors into Sirens](instructions/4-turn-errors-into-sirens.md)
 
-### Configuration
+### Project Submission
 
-1. Inside the backend folder rename ".env.sample"
+For your submission, please submit the following:
 
-```
-cd backend
-mv .env.sample .env
-```
+- A text file named `urls.txt` including:
+  1. Public Url to GitHub repository (not private) [URL01]
+  1. Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]
+  1. Public URL for your CloudFront distribution (aka, your blue production front-end) [URL03]
+  1. Public URLs to deployed application back-end in EC2 [URL04]
+  1. Public URL to your Prometheus Server [URL05]
+- Your screenshots in JPG or PNG format, named using the screenshot number listed in the instructions. These screenshots should be included in your code repository in the root folder.
+  1. Job failed because of compile errors. [SCREENSHOT01]
+  1. Job failed because of unit tests. [SCREENSHOT02]
+  1. Job that failed because of vulnerable packages. [SCREENSHOT03]
+  1. An alert from one of your failed builds. [SCREENSHOT04]
+  1. Appropriate job failure for infrastructure creation. [SCREENSHOT05]
+  1. Appropriate job failure for the smoke test job. [SCREENSHOT06]
+  1. Successful rollback after a failed smoke test. [SCREENSHOT07]  
+  1. Successful promotion job. [SCREENSHOT08]
+  1. Successful cleanup job. [SCREENSHOT09]
+  1. Only deploy on pushed to `master` branch. [SCREENSHOT10]
+  1. Provide a screenshot of a graph of your EC2 instance including available memory, available disk space, and CPU usage. [SCREENSHOT11]
+  1. Provide a screenshot of an alert that was sent by Prometheus. [SCREENSHOT12]
 
-### Steps
+- Your presentation should be in PDF format named "presentation.pdf" and should be included in your code repository root folder. 
 
-1. Start the database
+Before you submit your project, please check your work against the project rubric. If you haven’t satisfied each criterion in the rubric, then revise your work so that you have met all the requirements. 
 
-```
-cd util
-docker compose up
-```
-
-2. Start the backend
-
-```
-cd backend
-npm install
-npm run start:dev
-```
-
-3. Start the frontend
-
-```
-cd frontend
-npm install
-npm run start
-```
-
-## Production
-
-### Steps
-
-1. Fork the repository.
-
-2. In you AWS account create an RDS PostgreSQL instance.
-
-3. Connect the repository to CircleCi (Cancel workflow).
-
-4. Inside CircleCi console, edit project settings to set environment variables.
-
-| KEY                    | VALUE                                    |
-| ---------------------- | ---------------------------------------- |
-| AWS_ACCESS_KEY_ID      | (from IAM user with programmatic access) |
-| AWS_SECRET_ACCESS_KEY  | (from IAM user with programmatic access) |
-| AWS_DEFAULT_REGION     | (your default region in aws)             |
-| TYPEORM_CONNECTION     | postgres                                 |
-| TYPEORM_MIGRATIONS_DIR | ./src/migrations                         |
-| TYPEORM_ENTITIES       | ./src/modules/domain/\*_/_.entity.ts     |
-| TYPEORM_MIGRATIONS     | ./src/migrations/\*.ts                   |
-| TYPEORM_HOST           | {your postgres database hostname in RDS} |
-| TYPEORM_PORT           | 5432                                     |
-| TYPEORM_USERNAME       | {your postgres database username in RDS} |
-| TYPEORM_PASSWORD       | {your postgres database username in RDS} |
-| TYPEORM_DATABASE       | postgres                                 |
-| THISDB_BUCKET          | {Your bucket name from thisdb.com}       |
-| THISDB_API_KEY         | {Your API key from thisdb.com}           |
-
-5. Run the workflow again to deploy the project in your AWS infrastructure.
-
-## Built With
+### Built With
 
 - [Circle CI](www.circleci.com) - Cloud-based CI/CD service
 - [Amazon AWS](https://aws.amazon.com/) - Cloud services
-- [CloudFormation](https://aws.amazon.com/cloudformation/) - Infrastructure as code
+- [AWS CLI](https://aws.amazon.com/cli/) - Command-line tool for AWS
+- [CloudFormation](https://aws.amazon.com/cloudformation/) - Infrastrcuture as code
 - [Ansible](https://www.ansible.com/) - Configuration management tool
 - [Prometheus](https://prometheus.io/) - Monitoring tool
+
+### License
+
+[License](LICENSE.md)
