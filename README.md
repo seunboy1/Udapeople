@@ -1,5 +1,5 @@
 # UdaPeople
-My repo for the third nanodegree project - Give your Application Auto-Deploy Superpowers.
+A CI-CD pipeline for a client/server TypeScript project hosted on AWS EC2 and CloudFront and monitored with Prometheus.
 
 ## Repo Structure
 It contains the following files:
@@ -32,6 +32,24 @@ Environment monitoring tool
 
 1. Create AWS RDS database
 2. Setup repo as a CircleCI project and add all necessary configurations: Environment variables, SSH keys, API tokens(for GitHub actions trigger), Slack integrations(for alerts), etc
+
+| KEY                    | VALUE                                    |
+| ---------------------- | ---------------------------------------- |
+| AWS_ACCESS_KEY_ID      | (from IAM user with programmatic access) |
+| AWS_SECRET_ACCESS_KEY  | (from IAM user with programmatic access) |
+| AWS_DEFAULT_REGION     | (your default region in aws)             |
+| TYPEORM_CONNECTION     | postgres                                 |
+| TYPEORM_MIGRATIONS_DIR | ./src/migrations                         |
+| TYPEORM_ENTITIES       | ./src/modules/domain/\*_/_.entity.ts     |
+| TYPEORM_MIGRATIONS     | ./src/migrations/\*.ts                   |
+| TYPEORM_HOST           | {your postgres database hostname in RDS} |
+| TYPEORM_PORT           | 5432                                     |
+| TYPEORM_USERNAME       | {your postgres database username in RDS} |
+| TYPEORM_PASSWORD       | {your postgres database username in RDS} |
+| TYPEORM_DATABASE       | postgres                                 |
+| THISDB_BUCKET          | {Your bucket name from thisdb.com}       |
+| THISDB_API_KEY         | {Your API key from thisdb.com}           |
+
 3. Create a sample **public** S3 bucket
 4. Setup a CloudFront distribution using CloudFormation; `.circleci/files/cloudfront.yml`
 5. Sign up and set up a key bucket on [KVDB](https://kvdb.io/) (needed inside the circleci `config.yml` file)
