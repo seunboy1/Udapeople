@@ -1,4 +1,4 @@
-# Udacity Cloud DevOps Engineer Nanodegree Project 3
+# UdaPeople
 My repo for the third nanodegree project - Give your Application Auto-Deploy Superpowers.
 
 ## Repo Structure
@@ -9,7 +9,6 @@ It contains the following files:
 4. Frontend app - `frontend` folder
 5. Screenshots folder - `screenshots`
 
-Submitted deploy URL: http://udapeople-01dd2a8.s3-website-us-east-1.amazonaws.com
 <br/>
 
 
